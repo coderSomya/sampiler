@@ -3,8 +3,9 @@
 #include <sstream>
 #include <vector>
 
-#include "./lexer.hpp"
+#include "lexer.hpp"
 #include "parser.hpp"
+#include "generator.hpp"
 
 int main(int argc, char ** argv){
     
@@ -39,10 +40,13 @@ int main(int argc, char ** argv){
         std::cout<<x->TYPE<<" : "<<x->VALUE<<std::endl;
     }
     
-    Parser parser(tokens);
-    AST_NODE* root = parser.parse();
+    // Parser parser(tokens);
+    // AST_NODE* root = parser.parse();
     
-    std::cout<<"parsed! number of statements = "<<root->SUB_STATEMENTS.size()<<std::endl;
+    // std::cout<<"parsed! number of statements = "<<root->SUB_STATEMENTS.size()<<std::endl;
+    
+    Generator generator(NULL,argv[1]);
+    generator.generate();
     
     std::cout<<"end of the program"<<std::endl;
     return 0;
