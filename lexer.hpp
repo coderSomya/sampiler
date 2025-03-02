@@ -15,6 +15,8 @@ enum type{
     TOKEN_RIGHT_PAREN,
     TOKEN_KEYWORD,
     TOKEN_EOF,
+    TOKEN_STRING,
+    TOKEN_QUOTES
 };
 
 class Token{
@@ -58,19 +60,26 @@ class Lexer{
                 switch(current){
                     case '=':{
                         tokens.push_back(tokenizeSpecial(TOKEN_EQUALS));
-                        continue;
+                        break;
                     }
                     case '(':{
                         tokens.push_back(tokenizeSpecial(TOKEN_LEFT_PAREN));                        
-                        continue;
+                        break;
                     }
                     case ')':{
                         tokens.push_back(tokenizeSpecial(TOKEN_RIGHT_PAREN));
-                        continue;
+                        break;
                     }
                     case ';':{
                         tokens.push_back(tokenizeSpecial(TOKEN_SEMICOLON));
-                        continue;
+                        break;
+                    }
+                    //print("hello world");
+                    case '"':{
+                        tokens.push_back(tokenizeSpecial(TOKEN_QUOTES));
+                        tokens.push_back(tokenizeString());
+                        tokens.push_back(tokenizeSpecial(TOKEN_QUOTES));
+                        break;
                     }
                     default:{
                         std::cout<<"Lexer error, undefined symbol"<<std::endl;
@@ -167,6 +176,22 @@ class Lexer{
             return newToken;
         }
         
+        Token* tokenizeString(){
+            std::stringstream buffer;
+            while(current!='"'){
+                if(current=='\0'){
+                    std::cout<<"Lexer error: Missing quotes"<<std::endl;
+                    exit(1);
+                }
+                buffer<<advance();
+            }
+            Token* newToken = new Token();
+            
+            newToken->TYPE=TOKEN_STRING;
+            newToken->VALUE=buffer.str();
+            
+            return newToken;
+        }
 };
 
 #endif

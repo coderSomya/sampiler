@@ -10,6 +10,7 @@ enum NODE_TYPE{
   NODE_VARIABLE,
   NODE_RETURN,
   NODE_PRINT,
+  NODE_STRING,
   NODE_INT
 };
 
@@ -112,13 +113,29 @@ class Parser{
             return newNode;
         }
         
+        AST_NODE* parseString(){
+            if(current->TYPE != TOKEN_STRING){
+                std::cout<<"Parser error! Print statement does not have a string"<<std::endl;
+                exit(1);
+            }
+            
+            AST_NODE* newNode = new AST_NODE();
+            newNode->TYPE=NODE_STRING;
+            newNode->VALUE=&current->VALUE;
+            proceed(TOKEN_STRING);
+            return newNode;
+        }
+        
         AST_NODE* parsePrint(){
             proceed(TOKEN_KEYWORD);
-            AST_NODE * newNode = new AST_NODE();
-            newNode->TYPE = NODE_PRINT;
-            
             proceed(TOKEN_LEFT_PAREN);
-            newNode->CHILD = parseInt();
+            proceed(TOKEN_QUOTES);
+            
+            AST_NODE* newNode = new AST_NODE();
+            newNode->TYPE=NODE_PRINT;
+            newNode->CHILD=parseString();
+            
+            proceed(TOKEN_QUOTES);
             proceed(TOKEN_RIGHT_PAREN);
             
             return newNode;
