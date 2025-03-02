@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "./lexer.hpp"
+#include "parser.hpp"
 
 int main(int argc, char ** argv){
     
@@ -28,9 +29,21 @@ int main(int argc, char ** argv){
     
     std::vector<Token *> tokens = lexer.tokenize();
     
+    if (tokens.back()->TYPE != TOKEN_EOF){
+        Token * EOFNode = new Token();
+        EOFNode->TYPE = TOKEN_EOF;
+        tokens.push_back(EOFNode);
+    }
+
     for(auto x: tokens){
         std::cout<<x->TYPE<<" : "<<x->VALUE<<std::endl;
     }
+    
+    Parser parser(tokens);
+    AST_NODE* root = parser.parse();
+    
+    std::cout<<"parsed! number of statements = "<<root->SUB_STATEMENTS.size()<<std::endl;
+    
     std::cout<<"end of the program"<<std::endl;
     return 0;
 }
